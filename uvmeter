@@ -1,0 +1,43 @@
+//                                                          Siemandero!
+// Tutaj powstaje wskaźnik wysterowania na diodach ws2812.
+// Pomysł jest taki, że odczyt z pinu analogowego będzie porównywane do ostatniego odczytu.
+// Jeżeli odczyt będzie wyższy to ma się zapalić +1 dioda a jeżeli będzie niższy to odejmować jedną.
+// W początkowej fazie rozwoju programu będzie to jeden kolor wyświetlany na diodach, 
+// następnie dodam efekt sopla a na koniec efekt gradientu.
+
+#include <FastLED.h>
+#define LPIN 6
+#define MIC 0
+#define NUM_LEDS 37
+
+CRGB leds[LPIN];
+
+
+void setup() {
+FastLED.addLeds<NEOPIXEL, LPIN>(leds, NUM_LEDS);
+
+ for (int i = 0; i < NUM_LEDS; i++) {
+  leds[i] = CRGB(255, 0, 0);
+ 
+ }
+FastLED.show();
+}
+
+void loop() {
+
+//0 to 1027, 737
+int sensor_value = analogRead(MIC);
+
+int show_leds = map(sensor_value, 0, 1023, 0, 50);
+
+for (int i = 0; i < NUM_LEDS; i++) {
+  if (i < show_leds) {
+    leds[i] = CRGB(250, 0, 0);
+  } else {
+    leds[i] = CRGB(0, 0, 0);
+  }
+}
+ delay(5);
+
+
+}
