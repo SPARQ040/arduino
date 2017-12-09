@@ -10,9 +10,8 @@
 #define MIC 0
 #define NUM_LEDS 37
 
-int d=0; //ostatni odczyt
-int g=0; //nowy odczyt
-int s=0; //odczyt
+int stary=0; //ostatni odczyt
+int nowy=0; //nowy odczyt
 int f=0; //analogread
 
 CRGB leds[LPIN];
@@ -32,20 +31,21 @@ void loop() {
 
 int f = analogRead(MIC);
 
-int s = map(f, 0, 1023, 0, 50);
-if(s > d) {
+int nowy = map(f, 0, 1023, 0, 50);
+if(nowy > stary) {
  i++;
- d=s;
- 
+  leds[i] = CRGB(255, 0, 0);
+stary=nowy;
  }
-if(s < d) {
+if(nowy < stary) {
  i-1;
- d=s;
+  leds[i] = CRGB(255, 0, 0);
+nowy =stary;
  }
 
 
 
-}
+
  delay(5);
 
 
