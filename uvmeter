@@ -10,6 +10,11 @@
 #define MIC 0
 #define NUM_LEDS 37
 
+int d=0; //ostatni odczyt
+int g=0; //nowy odczyt
+int s=0; //odczyt
+int f=0; //analogread
+
 CRGB leds[LPIN];
 
 
@@ -25,17 +30,21 @@ FastLED.show();
 
 void loop() {
 
-//0 to 1027, 737
-int sensor_value = analogRead(MIC);
+int f = analogRead(MIC);
 
-int show_leds = map(sensor_value, 0, 1023, 0, 50);
+int s = map(f, 0, 1023, 0, 50);
+if(s > d) {
+ i++;
+ d=s;
+ 
+ }
+if(s < d) {
+ i-1;
+ d=s;
+ }
 
-for (int i = 0; i < NUM_LEDS; i++) {
-  if (i < show_leds) {
-    leds[i] = CRGB(250, 0, 0);
-  } else {
-    leds[i] = CRGB(0, 0, 0);
-  }
+
+
 }
  delay(5);
 
