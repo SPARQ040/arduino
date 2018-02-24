@@ -1,0 +1,69 @@
+/* Growbox Arduino!
+ Program been included drivers to:
+  *  SSD1306 Oled display
+  *  DHT22 temperature and humidity sensor
+  *  3x Dallas DS18B20 sensor
+  *  2x fun(to regulate and stabilisation temperature and humidity)
+  *  Soil Humidity Sensor  
+  *  RTC modulde
+  *  In future I include wifi module
+ */
+ #define ahumid_min 55
+ #define ahumid_max 70
+ 
+ #define ghumid_min 50
+ #define ghumid_max 80
+ 
+ #define atemp_min 21
+ #define atemp_max 25
+ 
+ #define gtemp_min 18
+ #define gtemp_max 20
+ 
+ 
+#include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h>
+#include <DallasTemperature.h>
+#include <OneWire.h>
+#include <DS3231.h>
+
+#define ONE_WIRE_BUS 2
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+int temp_1 = 0;
+int temp_2 = 0;
+int temp_3 = 0;
+
+
+void temp_ds18b20 {
+   sensors.requestTemperatures();
+ temp_1 = sensors.getTempCByIndex(0);
+ temp_2 = sensors.getTempCByIndex(1);
+ temp_3 = sensors.getTempCByIndex(2);
+}
+void DrawTitles(void) {
+
+  Display.setTextSize(2);
+  Display.setTextColor(WHITE);
+  Display.setCursor(0, 1);
+  Display.println("GrowBox");
+  drawRect.(0, 0, 128, 20, WHITE);
+   Display.setTextSize(1);
+    Display.setCursor(0, 11);
+  Display.println("Data:");
+    Display.setCursor(90, 11);
+  Display.println("Czas:");
+    Display.setCursor(0, 21);
+  Display.println("Temperatura Powietrza");
+    Display.setCursor(0, 31);
+  Display.println("Wilgotnosc Powietrza");
+    Display.setCursor(0, 41);
+  Display.println("Temperatura Gleby");
+    Display.setCursor(0, 51);
+  Display.println("Wilgotnosc Gleby");
+  Display.display();
+
+}
+
+
