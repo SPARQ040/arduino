@@ -6,64 +6,75 @@
   *  2x fun(to regulate and stabilisation temperature and humidity)
   *  Soil Humidity Sensor  
   *  RTC modulde
-  *  In future I include wifi module
+  *  In future I will add wifi module
  */
- #define ahumid_min 55
- #define ahumid_max 70
- 
- #define ghumid_min 50
- #define ghumid_max 80
- 
- #define atemp_min 21
- #define atemp_max 25
- 
- #define gtemp_min 18
- #define gtemp_max 20
- 
- 
+  
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_GFX.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
 #include <DS3231.h>
+#include <Wire.h>
 
+
+  #define ahumid_min 55
+  #define ahumid_max 70
+ 
+  #define ghumid_min 50
+  #define ghumid_max 80
+ 
+  #define atemp_min 21
+  #define atemp_max 25
+ 
+  #define gtemp_min 18
+  #define gtemp_max 20
+ 
+Adafruit_SSD1306 display(4);
 #define ONE_WIRE_BUS 2
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
+Adafruit_SSD1306 Display(4);
+DS3231 RTC;
 
 int temp_1 = 0;
 int temp_2 = 0;
 int temp_3 = 0;
 
 
-void temp_ds18b20 {
+void temp_ds18b20() {
    sensors.requestTemperatures();
  temp_1 = sensors.getTempCByIndex(0);
  temp_2 = sensors.getTempCByIndex(1);
  temp_3 = sensors.getTempCByIndex(2);
 }
-void DrawTitles(void) {
+void DrawMenu(void) {
 
   Display.setTextSize(2);
   Display.setTextColor(WHITE);
   Display.setCursor(0, 1);
   Display.println("GrowBox");
-  drawRect.(0, 0, 128, 20, WHITE);
+  Display.drawRect(0, 0, 128, 20, WHITE);
    Display.setTextSize(1);
     Display.setCursor(0, 11);
-  Display.println("Data:");
+  Display.print("Data:");
+  Display.print(RTC.getDate(), DEC); Display.print(RTC.getMonth(), DEC); Display.print(RTC.getYear(), DEC); 
     Display.setCursor(90, 11);
-  Display.println("Czas:");
+  Display.print("Czas:");
+  Display.print(RTC.getHour(), DEC); Display.print(RTC.getMinute(), DEC); Display.print(RTC.getSecond(), DEC);
     Display.setCursor(0, 21);
-  Display.println("Temperatura Powietrza");
+  Display.print("Temperatura Powietrza");
     Display.setCursor(0, 31);
-  Display.println("Wilgotnosc Powietrza");
+  Display.print("Wilgotnosc Powietrza");
     Display.setCursor(0, 41);
-  Display.println("Temperatura Gleby");
+  Display.print("Temperatura Gleby");
     Display.setCursor(0, 51);
-  Display.println("Wilgotnosc Gleby");
+  Display.print("Wilgotnosc Gleby");
   Display.display();
 
 }
 
-
+void setup() {
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  }
+void loop() {
+  }
