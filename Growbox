@@ -15,6 +15,7 @@
 #include <OneWire.h>
 #include <DS3231.h>
 #include <Wire.h>
+#include <SimpleDHT.h>
 
 
   #define ahumid_min 55
@@ -29,25 +30,26 @@
   #define gtemp_min 18
   #define gtemp_max 20
  
-Adafruit_SSD1306 display(4);
-#define ONE_WIRE_BUS 2
-OneWire oneWire(ONE_WIRE_BUS);
+Adafruit_SSD1306 Display(2);
+OneWire oneWire(3);
 DallasTemperature sensors(&oneWire);
-Adafruit_SSD1306 Display(4);
 DS3231 RTC;
+int pinDHT22 = 4;
+SimpleDHT22 dht22;
 
 int temp_1 = 0;
 int temp_2 = 0;
 int temp_3 = 0;
-
-
+int temperature = 0;
+int humidity = 0;
+bool Century = false;
 void temp_ds18b20() {
    sensors.requestTemperatures();
  temp_1 = sensors.getTempCByIndex(0);
  temp_2 = sensors.getTempCByIndex(1);
  temp_3 = sensors.getTempCByIndex(2);
 }
-void DrawMenu(void) {
+void DrawMenu() {
 
   Display.setTextSize(2);
   Display.setTextColor(WHITE);
@@ -57,12 +59,16 @@ void DrawMenu(void) {
    Display.setTextSize(1);
     Display.setCursor(0, 11);
   Display.print("Data:");
-  Display.print(RTC.getDate(), DEC); Display.print(RTC.getMonth(), DEC); Display.print(RTC.getYear(), DEC); 
+  Display.print(RTC.getDate(), DEC); 
+  Display.print(RTC.getMonth(Century), DEC);
+  Display.print(RTC.getYear(), DEC); 
     Display.setCursor(90, 11);
   Display.print("Czas:");
-  Display.print(RTC.getHour(), DEC); Display.print(RTC.getMinute(), DEC); Display.print(RTC.getSecond(), DEC);
+ // Display.print(RTC.getHour(), DEC);
+  Display.print(RTC.getMinute(), DEC); 
+  Display.print(RTC.getSecond(), DEC);
     Display.setCursor(0, 21);
-  Display.print("Temperatura Powietrza");
+  Display.print("Temperatura Powietrza"); 
     Display.setCursor(0, 31);
   Display.print("Wilgotnosc Powietrza");
     Display.setCursor(0, 41);
@@ -74,7 +80,17 @@ void DrawMenu(void) {
 }
 
 void setup() {
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+    Display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   }
 void loop() {
+  if (Century) {      // Won't need this for 89 years.
+    Serial.print("1");
+  } else {
+    Serial.print("0");
   }
+  
+
+  
+  }
+
+
