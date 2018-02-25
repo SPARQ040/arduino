@@ -31,18 +31,24 @@
   #define gtemp_max 20
  
 Adafruit_SSD1306 Display(2);
+
 OneWire oneWire(3);
 DallasTemperature sensors(&oneWire);
+
 DS3231 RTC;
-int pinDHT22 = 4;
-SimpleDHT22 dht22;
+
+#define DHTPIN 4    // what pin we're connected to
+#define DHTTYPE DHT22 
 
 int temp_1 = 0;
 int temp_2 = 0;
 int temp_3 = 0;
-int temperature = 0;
-int humidity = 0;
+
+int chk;
+float hum;  //Stores humidity value
+float temp; //Tepmerature value
 bool Century = false;
+
 void temp_ds18b20() {
    sensors.requestTemperatures();
  temp_1 = sensors.getTempCByIndex(0);
@@ -76,11 +82,27 @@ void DrawMenu() {
     Display.setCursor(0, 51);
   Display.print("Wilgotnosc Gleby");
   Display.display();
+}
+void check() {
+  for(
+  
+}
 
+void reading () {
+
+       sensors.requestTemperatures();
+       temp_1 = sensors.getTempCByIndex(0);
+       temp_2 = sensors.getTempCByIndex(1);
+       temp_3 = sensors.getTempCByIndex(2);
+       hum = dht.readHumidity();
+       temp= dht.readTemperature();
+  
 }
 
 void setup() {
     Display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+      dht.begin();
+    
   }
 void loop() {
   if (Century) {      // Won't need this for 89 years.
@@ -88,9 +110,6 @@ void loop() {
   } else {
     Serial.print("0");
   }
-  
 
-  
   }
-
 
