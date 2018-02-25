@@ -43,18 +43,14 @@ DS3231 RTC;
 int temp_1 = 0;
 int temp_2 = 0;
 int temp_3 = 0;
-
+int ghum1 = 0;
 int chk;
 float hum;  //Stores humidity value
 float temp; //Tepmerature value
 bool Century = false;
 
-void temp_ds18b20() {
-   sensors.requestTemperatures();
- temp_1 = sensors.getTempCByIndex(0);
- temp_2 = sensors.getTempCByIndex(1);
- temp_3 = sensors.getTempCByIndex(2);
-}
+
+
 void DrawMenu() {
 
   Display.setTextSize(2);
@@ -84,7 +80,19 @@ void DrawMenu() {
   Display.display();
 }
 void check() {
-  for(
+  for(temp_1 < atemp_min){
+    
+  }
+  for(temp_1 > atemp_max){
+    
+  }
+  for(ghum1 < ghumid_min){
+     
+  }
+  for(ghum1 > ghumid_max) {
+    
+  }
+  
   
 }
 
@@ -112,4 +120,5 @@ void loop() {
   }
 
   }
+
 
