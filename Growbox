@@ -39,15 +39,43 @@ DS3231 RTC;
 
 #define DHTPIN 4    // what pin we're connected to
 #define DHTTYPE DHT22 
-
+int att 5
+int State = LOW;
 int temp_1 = 0;
 int temp_2 = 0;
 int temp_3 = 0;
 int ghum1 = 0;
 int chk;
+int gleb;
 float hum;  //Stores humidity value
 float temp; //Tepmerature value
 bool Century = false;
+unsigned long previousMillis1 = 0;
+long OnTime1 = 250;
+long OffTime1 = 750; 
+ 
+void Watchdog() { 
+if(State==HIGH) {
+State=LOW;
+DigitalWrite(att, State);
+}
+else if (State==LOW) {
+State=HIGH
+digitalWtrte(att, State);
+}
+
+
+
+void PrintData() {
+Display.setTextSize(1);
+Display.setTextColor(WHITE);
+Display.SetCursor(100, 21); Display.print(temp);
+Display.SetCursor(100, 31); Display.print(hum);
+Display.SetCursor(100, 41); Display.print(temp_1);
+Display.SetCursor(100, 51); Display.print(gleb);
+Display.display();
+
+}
 
 
 
@@ -86,10 +114,10 @@ void check() {
   for(temp_1 > atemp_max){
     
   }
-  for(ghum1 < ghumid_min){
+  for(gleb < ghumid_min){
      
   }
-  for(ghum1 > ghumid_max) {
+  for(gleb > ghumid_max) {
     
   }
   
@@ -110,15 +138,24 @@ void reading () {
 void setup() {
     Display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
       dht.begin();
+      pinMode(att, OUTPUT);
     
   }
+
 void loop() {
-  if (Century) {      // Won't need this for 89 years.
+ if (Century) {      // Won't need this for 89 years.
     Serial.print("1");
   } else {
     Serial.print("0");
   }
-
-  }
-
+unsigned long currentMillis = millis();
+if(currentMillis - previousMillis >= OnTime) {
+DrawMenu();
+PrintData();
+} else if (currentMillis - previousMillis >= OffTime) {
+  reading();
+  check();
+  WatchDog();
+}
+}
 
