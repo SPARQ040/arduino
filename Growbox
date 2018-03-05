@@ -54,6 +54,42 @@ unsigned long previousMillis1 = 0;
 long OnTime1 = 250;
 long OffTime1 = 750; 
  
+ static const unsigned char PROGMEM logo16_glcd_bmp[] =
+{ B00000001, B10000000,
+  B00000011, B11110000,
+  B00000010, B01000000,
+  B00000010, B01100000,
+  B00000010, B01000000,
+  B00000010, B01110000,
+  B00000010, B01000000,
+  B00000011, 111000000,
+  B00000011, B11000000,
+  B00000111, B11100000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00001111, B11100000,
+  B00000111, B11100000 };
+
+static const unsigned char PROGMEM kropla[] =
+{ B00000001, B10000000,
+  B00000001, B10000000,
+  B00000011, B11000000,
+  B00000011, B11000000,
+  B00000111, B11100000,
+  B00000111, B11100000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00011111, B11111000,
+  B00011111, B11111000,
+  B00011111, B11111000,
+  B00011111, B11111000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00000111, B11100000,
+  B00000001, B11000000 };
+
 void Watchdog() { 
 if(State==HIGH) {
 State=LOW;
@@ -81,31 +117,31 @@ Display.display();
 
 void DrawMenu() {
 
-  Display.setTextSize(2);
+
+    Display.setTextSize(2);
   Display.setTextColor(WHITE);
-  Display.setCursor(0, 1);
+  Display.setCursor(20, 2);
   Display.println("GrowBox");
-  Display.drawRect(0, 0, 128, 20, WHITE);
-   Display.setTextSize(1);
-    Display.setCursor(0, 11);
-  Display.print("Data:");
-  Display.print(RTC.getDate(), DEC); 
-  Display.print(RTC.getMonth(Century), DEC);
-  Display.print(RTC.getYear(), DEC); 
-    Display.setCursor(90, 11);
-  Display.print("Czas:");
- // Display.print(RTC.getHour(), DEC);
-  Display.print(RTC.getMinute(), DEC); 
-  Display.print(RTC.getSecond(), DEC);
-    Display.setCursor(0, 21);
-  Display.print("Temperatura Powietrza"); 
-    Display.setCursor(0, 31);
-  Display.print("Wilgotnosc Powietrza");
-    Display.setCursor(0, 41);
-  Display.print("Temperatura Gleby");
-    Display.setCursor(0, 51);
-  Display.print("Wilgotnosc Gleby");
+  Display.drawRect(0, 0, 128, 16, WHITE);
+  Display.setTextSize(1);
+  Display.setCursor(0, 11);
+ // Display.print("Data:");
+  Display.setCursor(90, 11);
+  //Display.print("Czas:");
+  Display.drawBitmap(0, 21,  logo16_glcd_bmp, 16, 16, 1);
+  Display.drawBitmap(0, 41,  kropla, 16, 16, 1);
+  Display.drawLine(0,63, 128, 63, 1);
   Display.display();
+  Display.setCursor(16, 21);
+  Display.print("Powietrza"); 
+  Display.setCursor(16, 41);
+  Display.print("Powietrza");
+  Display.setCursor(16, 31);
+  Display.print("Gleby");
+  Display.setCursor(16, 51);
+  Display.print("Gleby");
+  Display.display();
+
 }
 void check() {
   for(temp_1 < atemp_min){
@@ -159,18 +195,4 @@ PrintData();
 }
 }
 
-
-
-
-
-
-
-
-/*
-Jin rong electronics co., LTD
--stm32f103 x5/ x10
--CSR8645 APT-X Bluetooth 4.0 Pokładzie Wzmacniacz 5 W + 5 x2
--Nowy XS3868 Moduł OVC3860 x2
--PAM8610 2x15 W wzmacniacz deska cyfrowy dwukanałowy.
-*/
 
