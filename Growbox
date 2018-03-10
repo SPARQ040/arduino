@@ -13,7 +13,6 @@
 #include <Adafruit_GFX.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
-#include <DS3231.h>
 #include <Wire.h>
 #include <SimpleDHT.h>
 
@@ -35,11 +34,10 @@ Adafruit_SSD1306 Display(2);
 OneWire oneWire(3);
 DallasTemperature sensors(&oneWire);
 
-DS3231 RTC;
 
 #define DHTPIN 4    // what pin we're connected to
 #define DHTTYPE DHT22 
-int att 5
+int att = 5;
 int State = LOW;
 int temp_1 = 0;
 int temp_2 = 0;
@@ -51,8 +49,8 @@ float hum;  //Stores humidity value
 float temp; //Tepmerature value
 bool Century = false;
 unsigned long previousMillis1 = 0;
-long OnTime1 = 250;
-long OffTime1 = 750; 
+long OnTime1 = 500;
+long OffTime1 = 500; 
  
  static const unsigned char PROGMEM logo16_glcd_bmp[] =
 { B00000001, B10000000,
@@ -125,9 +123,7 @@ void DrawMenu() {
   Display.drawRect(0, 0, 128, 16, WHITE);
   Display.setTextSize(1);
   Display.setCursor(0, 11);
- // Display.print("Data:");
   Display.setCursor(90, 11);
-  //Display.print("Czas:");
   Display.drawBitmap(0, 21,  logo16_glcd_bmp, 16, 16, 1);
   Display.drawBitmap(0, 41,  kropla, 16, 16, 1);
   Display.drawLine(0,63, 128, 63, 1);
@@ -179,11 +175,7 @@ void setup() {
   }
 
 void loop() {
- if (Century) {      // Won't need this for 89 years.
-    Serial.print("1");
-  } else {
-    Serial.print("0");
-  }
+
 unsigned long currentMillis = millis();
 if(currentMillis - previousMillis >= OnTime) {
 DrawMenu();
