@@ -188,3 +188,192 @@ PrintData();
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+/* Growbox Arduino!
+ Program been included drivers to:
+  *  SSD1306 Oled display
+  *  DHT22 temperature and humidity sensor
+  *  2x Dallas DS18B20 sensor
+  *  2x fun(to regulate and stabilisation temperature and humidity)
+  *  Soil Humidity Sensor  
+  *  RTC modulde
+  *  In future I will add wifi module
+ */
+  
+#include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h>
+#include <DS3231.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <dht.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+
+DS3231  rtc(SDA, SCL);
+Time  t;
+#define woda 6
+#define OLED_RESET 4
+#define ODSTEP 100
+#define LIMIT_ODCZYTOW 20
+Adafruit_SSD1306 oled(OLED_RESET);
+Adafruit_SSD1306 oled2(OLED_RESET);
+
+dht DHT;
+#define dataPin 7
+
+
+#define ONE_WIRE_BUS 2
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature sensors(&oneWire);
+
+//float e,c,d,b;
+
+int suma_odczytow = 0;
+int liczba_odczytow = 0;
+unsigned long czas_poprzedni = 0;
+float srednia;
+
+int a;
+ static const unsigned char PROGMEM logo16_glcd_bmp[] =
+{ B00000001, B10000000,
+  B00000011, B11110000,
+  B00000010, B01000000,
+  B00000010, B01100000,
+  B00000010, B01000000,
+  B00000010, B01110000,
+  B00000010, B01000000,
+  B00000011, 111000000,
+  B00000011, B11000000,
+  B00000111, B11100000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00001111, B11100000,
+  B00000111, B11100000 };
+
+static const unsigned char PROGMEM kropla[] =
+{ B00000001, B10000000,
+  B00000001, B10000000,
+  B00000011, B11000000,
+  B00000011, B11000000,
+  B00000111, B11100000,
+  B00000111, B11100000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00011111, B11111000,
+  B00011111, B11111000,
+  B00011111, B11111000,
+  B00011111, B11111000,
+  B00001111, B11110000,
+  B00001111, B11110000,
+  B00000111, B11100000,
+  B00000001, B11000000 };
+
+
+
+
+
+  
+void setup() {
+ rtc.begin();
+ Serial.begin(9600);
+  oled.begin(SSD1306_SWITCHCAPVCC, 0x3D);
+  oled2.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+  oled.clearDisplay();
+  pinMode(A0, INPUT);
+  pinMode(woda, OUTPUT);
+}
+
+
+
+void loop() {
+
+  t = rtc.getTime();
+
+ 
+  int readData = DHT.read22(dataPin);
+  float temp = DHT.temperature;
+  float h = DHT.humidity;
+
+  sensors.requestTemperatures();
+
+  
+  unsigned long czas_aktualny = millis();
+
+    if(czas_aktualny - czas_poprzedni > ODSTEP) {
+    czas_poprzedni = czas_aktualny; 
+    liczba_odczytow += 1;
+    suma_odczytow += analogRead(A0 );
+      if(liczba_odczytow >= LIMIT_ODCZYTOW){
+           srednia = ceil(suma_odczytow / liczba_odczytow);
+            
+            liczba_odczytow = suma_odczytow = 0;
+      }
+    }
+/*
+  int i = analogRead(A0);  
+  a = map(i, 300, 1000, 100, 0);
+  if(a<=0) a=0;
+  if(a>=100) a=100;
+  c++;
+  d=a+d;
+  d=d;
+
+  if(c==liczba_odczytow) {
+  c=0;
+  float e = (d/liczba_odczytow);
+ 
+  d=0;
+}
+
+*/
+
+  
+
+  
+  
+    oled.setTextSize(1);
+  oled.setTextColor(BLACK);
+  oled.fillRect(0, 0, 127, 16, WHITE);
+  oled.setCursor(1,5);
+  oled.print(t.date, DEC); oled.print("."); oled.print(t.mon, DEC); /////////////// data lewa
+  oled.setCursor(75,5);
+  oled.print(rtc.getTimeStr());////////////////////////////////////////////////////godzina prawa
+  oled.setTextSize(1);                                                     
+  oled.drawBitmap(0, 21,  logo16_glcd_bmp, 16, 16, 1); ////////////////////////////bitmapa
+  oled.drawBitmap(0, 45,  kropla, 16, 16, 1); /////////////////////////////////////
+  oled.setTextColor(WHITE);
+  oled.setCursor(16, 21);
+  oled.print("Powietrza"); oled.setCursor(80,21); oled.print(temp); oled.setCursor(110,19); oled.write(9); oled.setCursor(115,21); oled.print("C");
+  oled.setCursor(16, 31);
+  oled.print("Gleby");    oled.setCursor(80,31); oled.print(sensors.getTempCByIndex(0)-1); oled.setCursor(110,29); oled.write(9); oled.setCursor(115,31);oled.print("C");
+  oled.setCursor(16, 45);
+  oled.print("Powietrza");oled.setCursor(80,45); oled.print(h); oled.setCursor(112,45);oled.write(37); 
+  oled.setCursor(16, 55);
+  oled.print("Gleby");    oled.setCursor(80,55); oled.print(srednia); oled.setCursor(112,55); oled.write(37);
+  oled.setTextColor(BLACK);
+  oled.setCursor(50,5);
+  oled.write(127);
+  oled.display();
+delay(350);
+oled.clearDisplay();
+ 
+  
+}
+  
+
+
+
+
+
